@@ -17,7 +17,7 @@ import { TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
+// import InputLabel from '@mui/material/InputLabel';
 
 
 // function Item(props) {
@@ -71,12 +71,14 @@ export default function Homepage() {
       console.error('Error deleting user:', error.response.data.message);
     }
   };
-  
+
   const handleEdit = (user) => {
     setEditingUser(user);
   };
 
   const handleSave = async () => {
+    console.log(editingUser._id)
+    console.log(editingUser)
     try {
       await axios.put(`http://68.183.230.164:3000/users/update/${editingUser._id}`, editingUser);
       const updatedUsers = users.map(user => (user._id === editingUser._id ? editingUser : user));
@@ -90,8 +92,8 @@ export default function Homepage() {
   const handleChange = (e) => {
     setEditingUser({ ...editingUser, role: e.target.value });
   };
-  
-  
+
+
 
   return (
     <TableContainer component={Paper} style={{ marginTop: '1rem' }}>
@@ -105,7 +107,7 @@ export default function Homepage() {
         }}
       >
         <Box sx={{ flexGrow: 1 }}>Users</Box>
-        <Link to='/Create'><Button variant="contained" startIcon={<AddIcon/>}>CREATE</Button></Link>
+        <Link to='/Create'><Button variant="contained" startIcon={<AddIcon />}>CREATE</Button></Link>
       </Box>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -139,7 +141,7 @@ export default function Homepage() {
               </TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
-                <Button variant="outlined" startIcon={<DeleteIcon />} style={{marginRight:'0.1rem'}} onClick={() => handleDelete(user._id)}>
+                <Button variant="outlined" startIcon={<DeleteIcon />} style={{ marginRight: '0.1rem' }} onClick={() => handleDelete(user._id)}>
                   Delete
                 </Button>
                 <Button variant="contained" endIcon={<EditIcon />} onClick={() => handleEdit(user)}>
@@ -153,24 +155,25 @@ export default function Homepage() {
       {editingUser && (
         <Box mt={2}>
           <Paper variant="outlined" elevation={3} sx={{ p: 2 }}>
-            <TextField name="name" label="Name" style={{margin:'0.3rem'}} value={editingUser.name} onChange={handleChange} fullWidth />
-            <TextField name="email" label="Email" style={{margin:'0.3rem'}} value={editingUser.email} onChange={handleChange} fullWidth />
-            <TextField name="username" label="Username" style={{margin:'0.3rem'}} value={editingUser.username} onChange={handleChange} fullWidth />
-            <TextField name="password" label="Password" style={{margin:'0.3rem'}} value={editingUser.password} onChange={handleChange} fullWidth />
+            <TextField name="name" label="Name" style={{ margin: '0.3rem' }} value={editingUser.name} onChange={handleChange} fullWidth />
+            <TextField name="email" label="Email" style={{ margin: '0.3rem' }} value={editingUser.email} onChange={handleChange} fullWidth />
+            <TextField name="username" label="Username" style={{ margin: '0.3rem' }} value={editingUser.username} onChange={handleChange} fullWidth />
+            <TextField name="password" label="Password" style={{ margin: '0.3rem' }} value={editingUser.password} onChange={handleChange} fullWidth />
             {/* <TextField name="role" label="Role" style={{margin:'0.3rem'}} value={editingUser.role} onChange={handleChange} fullWidth /> */}
-            <InputLabel id="demo-simple-select-label">Role</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={editingUser.role}
-          label="Age"
-          fullWidth
-          onChange={handleChange}
-        >
-          <MenuItem value="admin">admin</MenuItem>
-          <MenuItem value="employee">employee</MenuItem>
-          <MenuItem value="manager">manager</MenuItem>
-        </Select>
+            
+            <Select
+              style={{ margin: '0.3rem' }}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={editingUser.role}
+              label="Role"
+              fullWidth
+              onChange={handleChange}
+            >
+              <MenuItem value="admin">admin</MenuItem>
+              <MenuItem value="employee">employee</MenuItem>
+              <MenuItem value="manager">manager</MenuItem>
+            </Select>
             <Box mt={2} textAlign="right">
               <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
             </Box>

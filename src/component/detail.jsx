@@ -17,7 +17,7 @@ import { TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-// import InputLabel from '@mui/material/InputLabel';
+import InputLabel from '@mui/material/InputLabel';
 
 
 // function Item(props) {
@@ -48,7 +48,6 @@ import MenuItem from '@mui/material/MenuItem';
 export default function Homepage() {
   const [users, setUser] = useState([]);
   // const [deleteOpen, setDeleteOpen] = useState(false);
-  // const [selectedUser, setSelectedUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -77,23 +76,28 @@ export default function Homepage() {
   };
 
   const handleSave = async () => {
-    console.log(editingUser._id)
-    console.log(editingUser)
     try {
-      await axios.put(`http://68.183.230.164:3000/users/update/${editingUser._id}`, editingUser);
-      const updatedUsers = users.map(user => (user._id === editingUser._id ? editingUser : user));
-      setUser(updatedUsers);
-      setEditingUser(null);
+      if (!editingUser) {
+        console.error('No user data to save');
+        return;
+      }
+      console.log(editingUser)
+      const response = await axios.put(`http://68.183.230.164:3000/users/update/${editingUser._id}`, editingUser);
+      console.log('User updated successfully:', response.data);
+  
+      const updatedUsers = users.map(user => (user._id === editingUser._id ? response.data : user));
+        setUser(updatedUsers);
+        setEditingUser(null);
     } catch (error) {
-      console.error('Error updating user:', error.response.data.message);
+      console.error('Error updating user:', error.response ? error.response.data.message : error.message);
     }
   };
+  
 
   const handleChange = (e) => {
-    setEditingUser({ ...editingUser, role: e.target.value });
+    setEditingUser({ ...editingUser, [e.target.name]: e.target.value });
+    console.log(setEditingUser)
   };
-
-
 
   return (
     <TableContainer component={Paper} style={{ marginTop: '1rem' }}>
@@ -160,7 +164,7 @@ export default function Homepage() {
             <TextField name="username" label="Username" style={{ margin: '0.3rem' }} value={editingUser.username} onChange={handleChange} fullWidth />
             <TextField name="password" label="Password" style={{ margin: '0.3rem' }} value={editingUser.password} onChange={handleChange} fullWidth />
             {/* <TextField name="role" label="Role" style={{margin:'0.3rem'}} value={editingUser.role} onChange={handleChange} fullWidth /> */}
-            
+            <InputLabel id="demo-simple-select-label"></InputLabel>
             <Select
               style={{ margin: '0.3rem' }}
               labelId="demo-simple-select-label"
